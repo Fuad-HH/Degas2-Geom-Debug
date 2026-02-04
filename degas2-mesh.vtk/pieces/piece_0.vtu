@@ -1,0 +1,50 @@
+<VTKFile type="UnstructuredGrid" byte_order="LittleEndian" header_type="UInt64" compressor="vtkZLibDataCompressor">
+<UnstructuredGrid>
+<Piece NumberOfPoints="23" NumberOfCells="40">
+<Cells>
+<DataArray type="Int8" Name="types" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAAAoAAAAAAAAACgAAAAAAAAADAAAAAAAAAA=eAFjZSUOAAAQLADJ
+</DataArray>
+<DataArray type="Int32" Name="connectivity" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAADgAQAAAAAAAOABAAAAAAAAmAAAAAAAAAA=eAE10AcSwjAMBEATQgu9/v+p3ILkmZsrUmQ50xhjFfSh1wGeS2/CU+CoybeB3Nn96VejQV/38PsC3bnsULlsCY7laThVhvlzoBfzdrmU75rM/teg65j3jltpXp/MW+6l1WU8qNkTHoEM870v5l/BM9BjDubBfX03/wn09zwzeLO9Sd2bMO/79u9o/f4LDbS6nDfrC29NBO0=
+</DataArray>
+<DataArray type="Int32" Name="offsets" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAACgAAAAAAAAAKAAAAAAAAAAVwAAAAAAAAA=eAENw4EGwlAAAMDHGDHGiIiIGDFijDEiIkbEiBEjYsQYsc/vjotCCLErE1Mz127cunPvwdyjhSdLK2sbz168erP17sPOp70vB99+HP06Oftz8Q8a3gmd
+</DataArray>
+</Cells>
+<Points>
+<DataArray type="Float64" Name="coordinates" NumberOfComponents="3" ArrayType="VectorND" format="binary">
+AQAAAAAAAAAoAgAAAAAAACgCAAAAAAAArAAAAAAAAAA=eAFjYACBH/ZgiuHBfggNJx0grC9o4h+g6j+gibNA1aObwwEVR1f/AmoOxBYEyQVVjxA5ewYEGKDiF9D1QcW/oInD3YkmDncPmjiDA8QeWHgwMPxhWGJWuInT4TujR+6jlM9w9WlgwIPhTjT1+xE+ALNg5sPFnwhv+mxm9tIeaj5cHOKOO3D7YOagqUeTvwHlsxyAqYfQcHEHVHEhKB8WbzBZuPgBmAgAwKVTQQ==
+</DataArray>
+</Points>
+<PointData>
+<DataArray type="Int64" Name="global" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAAC4AAAAAAAAALgAAAAAAAAANAAAAAAAAAA=eAEtxbcBgCAAADDsooJY/z+VgWRJCE3n3oNHT569eHX05t2Hk7NPF1++/fj1598VP/gA/g==
+</DataArray>
+<DataArray type="Int32" Name="local" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAABcAAAAAAAAAFwAAAAAAAAAMQAAAAAAAAA=eAENwwcOgCAQALDDhYoT1P8/1TZpRESys3dwdDI7u7ha3Nw9PL28rTYfXz9/H/wA/g==
+</DataArray>
+<DataArray type="Int8" Name="class_dim" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAAAXAAAAAAAAABcAAAAAAAAADgAAAAAAAAA=eAFjYsIAjEAAAAI1ACs=
+</DataArray>
+<DataArray type="Int32" Name="class_id" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAABcAAAAAAAAAFwAAAAAAAAAEQAAAAAAAAA=eAFjZGBgYKQS/o8GAIv8EAQ=
+</DataArray>
+</PointData>
+<CellData>
+<DataArray type="Int64" Name="global" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAABAAQAAAAAAAEABAAAAAAAATgAAAAAAAAA=eAEtxUkCgQAAAMBICtFqqUgb/v/DDmYuEwR/G28deufIe8dOfPDRJ6c+++LMuQuXrlz76pvvfrhx685Pv9z77cGjJ89e/PHXP69ObwMN
+</DataArray>
+<DataArray type="Int32" Name="local" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAACgAAAAAAAAAKAAAAAAAAAASgAAAAAAAAA=eAENwwsSgVAAAMAnKfqoUEIiSve/od2ZDSGEjZFbY3cmpu49mJlbWHq0srbx5NmLrZ1Xe2/efTj4dPTl28mPX2cXf67+AacwAw0=
+</DataArray>
+<DataArray type="Int8" Name="class_dim" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAAAoAAAAAAAAACgAAAAAAAAADAAAAAAAAAA=eAFjYiIOAAAGkABR
+</DataArray>
+<DataArray type="Int32" Name="class_id" NumberOfComponents="1" ArrayType="VectorND" format="binary">
+AQAAAAAAAACgAAAAAAAAAKAAAAAAAAAADwAAAAAAAAA=eAFjZGBgYBzEGAANcAAp
+</DataArray>
+</CellData>
+</Piece>
+</UnstructuredGrid>
+</VTKFile>
