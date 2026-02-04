@@ -66,8 +66,8 @@ int main(int argc, char* argv[]) {
     }
 
     Omega_h::Write wall_node_tag_read(wall_node_tag);
-    input_mesh.add_tag<int>(Omega_h::VERT, "wall_node", 1);
-    input_mesh.set_tag(0, "wall_node", Omega_h::Read(wall_node_tag_read));
+    input_mesh.add_tag<int>(Omega_h::VERT, "isOnWall", 1);
+    input_mesh.set_tag(0, "isOnWall", Omega_h::Read(wall_node_tag_read));
 
     printf("Writing mesh to files\n");
     Omega_h::binary::write(output_mesh_name, &input_mesh);
