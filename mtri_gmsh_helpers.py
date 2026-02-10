@@ -9,6 +9,18 @@ import matplotlib.tri as mtri
 import pickle
 import gmsh
 
+def get_neighboring_cells(surface_id, surfaces, neighbors):
+    neg_pointer = surfaces[surface_id][0,0] # adjust for 0-based indexing
+    pos_pointer = surfaces[surface_id][0,1]  # adjust for 0-based indexing
+    neg_count = surfaces[surface_id][1,0]
+    pos_count = surfaces[surface_id][1,1]
+    #print(f"Surface {surface_id}: neg={neg_pointer}, pos={pos_pointer}, neg_count={neg_count}, pos_count={pos_count}")
+    
+    neg_cells = neighbors[neg_pointer:neg_pointer+neg_count]
+    pos_cells = neighbors[pos_pointer:pos_pointer+pos_count]
+    #print(f"  Neighboring cells on negative side: {neg_cells}")
+    #print(f"  Neighboring cells on positive side: {pos_cells}")
+    return neg_cells, pos_cells
 
 def parse_definegeometry2d_terminal_output(file_path):
     """
@@ -198,7 +210,7 @@ def evaluate_dg2_quadric(coeffs, point):
               cxy * x * y + cyz * y * z + cxz * x * z)
     return value
 
-def plot_quad_on_xz(coeffs, x_range, z_range, num_points=400, axis=None):
+def plot_quad_on_xz(coeffs, x_range, z_range, num_points=400, axis=None, sign=None):
     """
     Plot the quadric surface projected onto the XZ plane which becomes a line in XZ.
     
@@ -207,6 +219,8 @@ def plot_quad_on_xz(coeffs, x_range, z_range, num_points=400, axis=None):
         x_range (tuple): Range of x values (xmin, xmax)
         z_range (tuple): Range of z values (zmin, zmax)
         num_points (int): Number of points in each dimension for the grid
+        axis: Matplotlib axis to plot on (if None, uses plt)
+        sign (int, optional): If +1, fill positive region; if -1, fill negative region with red (opacity=0.1)
     """
     
     x_vals = np.linspace(x_range[0], x_range[1], num_points)
@@ -220,6 +234,19 @@ def plot_quad_on_xz(coeffs, x_range, z_range, num_points=400, axis=None):
         for j in range(num_points):
             point = (X[i,j], Y[i,j], Z[i,j])
             F[i,j] = evaluate_dg2_quadric(coeffs, point)
+    
+    # Fill the region based on sign if provided
+    if sign is not None:
+        if axis is None:
+            if sign > 0:
+                plt.contourf(X, Z, F, levels=[0, F.max()], colors='red', alpha=0.1)
+            else:
+                plt.contourf(X, Z, F, levels=[F.min(), 0], colors='red', alpha=0.1)
+        else:
+            if sign > 0:
+                axis.contourf(X, Z, F, levels=[0, F.max()], colors='red', alpha=0.1)
+            else:
+                axis.contourf(X, Z, F, levels=[F.min(), 0], colors='red', alpha=0.1)
     
     # return the contour to be plotted using matplotlib
     if axis is None:
