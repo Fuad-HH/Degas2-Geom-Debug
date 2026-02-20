@@ -200,7 +200,12 @@ def evaluate_dg2_quadric(coeffs, point):
     Returns:
         float: Evaluated value at the given point
     """
-    c0, cx, cy, cz, cxx, cyy, czz, cxy, cyz, cxz = coeffs
+    
+    try:
+        c0, cx, cy, cz, cxx, cyy, czz, cxy, cyz, cxz, up = coeffs
+    except ValueError:
+        c0, cx, cy, cz, cxx, cyy, czz, cxy, cyz, cxz = coeffs
+    
     x = point[0]
     y = point[1]
     z = point[2]
@@ -253,6 +258,99 @@ def plot_quad_on_xz(coeffs, x_range, z_range, num_points=400, axis=None, sign=No
         return plt.contour(X, Z, F, levels=[0], colors='red', alpha=0.7, linestyles='dashed')
     else:
         return axis.contour(X, Z, F, levels=[0], colors='red', alpha=0.7, linestyles='dashed')
+
+def coeffs_to_desmos_equation(input_coeff):
+    """
+    Convert quadric coefficients from degas2 format to a string representation of the equation for Desmos.
+    
+    :param input_coeff: String or list of coefficients [c0, cx, cy, cz, cxx, cyy, czz, cxy, cyz, cxz, cone_dir]
+    return: String representation of the quadric equation in the form "cxx*x^2 + cyy*y^2 + czz*z^2 + cz*z + c0 = 0"
+    """
+    # if string parse, otherwise assume it's already a list of floats
+    if isinstance(input_coeff, str):
+        input_coeff = list(map(float, input_coeff.split()))
+    coeffs = input_coeff
+    # now create a string representation of the equation for desmos
+    cxx = coeffs[4]
+    cyy = coeffs[5]
+    czz = coeffs[6]
+    c0 = coeffs[0]
+    cz = coeffs[3]
+    return f"{cxx}*x^2 + {cyy}*y^2 + {czz}*z^2 + {cz}*z + {c0} = 0"
+
+def origin_velocity_to_desmos_equation(x0_v_str):
+    """
+    Convert a 3D origin and velocity vector from degas2 format to a parametric equation string for Desmos.
+    
+    :param x0_v_str: String containing 6 space-separated values: x0, y0, z0, vx, vy, vz
+    :return: String representation of the parametric line in the form "(x0 + vx*t, y0 + vy*t, z0 + vz*t)"
+    """
+    if isinstance(x0_v_str, str):
+        x0_v = list(map(float, x0_v_str.split()))
+    else:
+        x0_v = x0_v_str
+    x0 = x0_v[:3]
+    v = x0_v[3:]
+    return f"({x0[0]} + {v[0]}*t, {x0[1]} + {v[1]}*t, {x0[2]} + {v[2]}*t)"
+
+
+def plot_flight_path_from_flights_file(flights_path, axis=None, max_flights=None, **plot_kwargs):
+    """Plot one or more 2D flight paths from a flights file.
+
+    Flights are separated by lines starting with dashes (e.g., "---"). The file
+    contains at least five whitespace-separated columns; the second and fourth
+    columns are the X and Y coordinates. Non-numeric or short lines are skipped.
+    If ``axis`` is ``None``, a new plot is drawn with ``matplotlib.pyplot``.
+    Additional keyword arguments are passed to ``plot``.
+    """
+    flights = []
+    xs = []
+    ys = []
+
+    with open(flights_path, "r") as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped:
+                continue
+
+            if stripped.startswith("-"):
+                if xs:
+                    flights.append((xs, ys))
+                    xs, ys = [], []
+                continue
+
+            parts = stripped.split()
+            if len(parts) < 4:
+                continue
+
+            try:
+                xs.append(float(parts[1]))
+                ys.append(float(parts[3]))
+            except ValueError:
+                continue
+
+    if xs:
+        flights.append((xs, ys))
+
+    if not flights:
+        raise ValueError(f"No flight coordinates parsed from {flights_path}")
+
+    if max_flights is None:
+        max_flights = len(flights)
+
+    if axis is None:
+        axis = plt.gca()
+
+    color_cycle = plt.rcParams['axes.prop_cycle'].by_key().get('color', None) or []
+
+    for idx, (fx, fy) in enumerate(flights[:max_flights]):
+        color = color_cycle[idx % len(color_cycle)] if color_cycle else None
+        axis.plot(fx, fy, ".-", label=f"Flight {idx+1}", color=color, **plot_kwargs)
+
+    axis.set_xlabel("X")
+    axis.set_ylabel("Y")
+    axis.set_aspect("equal", adjustable="datalim")
+    return axis
 
 
 def load_triangulation(filename):
