@@ -353,6 +353,85 @@ def plot_flight_path_from_flights_file(flights_path, axis=None, max_flights=None
     return axis
 
 
+def plot_flights_3d(flights_path, **plot_kwargs):
+    """Plot 3D flight paths from a flights file using Plotly.
+
+    Flights are separated by lines starting with dashes (e.g., "---"). Each
+    numeric line must contain at least four whitespace-separated columns where
+    the second, third, and fourth values represent X, Y, and Z respectively.
+    Non-numeric or short lines are skipped. A standalone Plotly figure is
+    created and shown with one trace per flight path.
+    """
+    import plotly.graph_objects as go
+    flights = []
+    xs = []
+    ys = []
+    zs = []
+
+    with open(flights_path, "r") as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped:
+                continue
+
+            if stripped.startswith("-"):
+                if xs:
+                    flights.append((xs, ys, zs))
+                    xs, ys, zs = [], [], []
+                continue
+
+            parts = stripped.split()
+            if len(parts) < 4:
+                continue
+
+            try:
+                xs.append(float(parts[1]))
+                ys.append(float(parts[3]))
+                zs.append(float(parts[2]))
+            except ValueError:
+                continue
+
+    if xs:
+        flights.append((xs, ys, zs))
+
+    if not flights:
+        raise ValueError(f"No flight coordinates parsed from {flights_path}")
+
+    fig = go.Figure()
+    for idx, (fx, fy, fz) in enumerate(flights):
+        scatter_kwargs = {"mode": "lines", **plot_kwargs}
+        fig.add_trace(go.Scatter3d(
+            x=fx,
+            y=fy,
+            z=fz,
+            name=f"Flight {idx+1}",
+            **scatter_kwargs,
+        ))
+
+    axis_style = dict(
+        title=dict(text=""),
+        showbackground=False,
+        showgrid=False,
+        zeroline=False,
+        showline=True,
+        linewidth=2,
+        linecolor="#444",
+        showticklabels=False,
+    )
+
+    fig.update_layout(
+        scene=dict(
+            xaxis=dict(axis_style, title="X"),
+            yaxis=dict(axis_style, title="Y"),
+            zaxis=dict(axis_style, title="Z"),
+            aspectmode="data",
+        ),
+        legend=dict(title="Flights"),
+        margin=dict(l=0, r=0, t=30, b=0),
+    )
+    return fig
+
+
 def load_triangulation(filename):
     """
     Load a matplotlib.tri.Triangulation object from a file.
