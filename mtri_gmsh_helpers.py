@@ -117,7 +117,7 @@ def parse_definegeometry2d_terminal_output(file_path):
     
     return triangulations
 
-def plot_triangulation_with_labels(triang, title='Mesh', xlim=None, ylim=None, axis=None):
+def plot_triangulation_with_labels(triang, title='Mesh', xlim=None, ylim=None, axis=None, node_numbers=True, triangle_numbers=True):
     """
     Plot a triangulation with node and triangle labels.
     
@@ -137,17 +137,19 @@ def plot_triangulation_with_labels(triang, title='Mesh', xlim=None, ylim=None, a
     
     # Plot the triangulation
     axis.triplot(triang, color='blue')
-    axis.plot(triang.x, triang.y, 'o', color='red')
+    #axis.plot(triang.x, triang.y, 'o', color='red')
     
     # Show node numbers
-    for i, (x, y) in enumerate(zip(triang.x, triang.y)):
-        axis.text(x, y, str(i), color='black', fontsize=12, ha='right', va='bottom')
+    if node_numbers:
+        for i, (x, y) in enumerate(zip(triang.x, triang.y)):
+            axis.text(x, y, str(i), color='black', fontsize=12, ha='right', va='bottom')
     
     # Show triangle numbers
-    for i, triangle in enumerate(triang.triangles):
-        x = np.mean(triang.x[triangle])
-        y = np.mean(triang.y[triangle])
-        axis.text(x, y, str(i), color='green', fontsize=12, ha='center', va='center')
+    if triangle_numbers:
+        for i, triangle in enumerate(triang.triangles):
+            x = np.mean(triang.x[triangle])
+            y = np.mean(triang.y[triangle])
+            axis.text(x, y, str(i), color='green', fontsize=12, ha='center', va='center')
     
     axis.set_xlabel('X-axis')
     axis.set_ylabel('Y-axis')
@@ -159,6 +161,31 @@ def plot_triangulation_with_labels(triang, title='Mesh', xlim=None, ylim=None, a
         axis.set_ylim(ylim)
     
     axis.set_aspect('equal')
+    
+def plot_values_on_triangles(triang, values, name='Values', axis=None, cmap='viridis'):
+    """
+    Plot values on a triangulation using a colormap.
+    
+    Parameters:
+    -----------
+    triang : matplotlib.tri.Triangulation
+        The triangulation object to plot
+    values : array-like
+        Values to plot on the triangles (should have the equal or smaller length than the number of triangles)
+    name : str, optional
+        Name for the colorbar (default: 'Values')
+    axis: Matplotlib axis to plot on (if None, uses plt)
+    cmap: Colormap to use for plotting (default: 'viridis')
+    """
+    if axis is None:
+        fig, axis = plt.subplots(figsize=(10, 8))
+    
+    # fill remaining values with NaN if values length is less than number of triangles
+    if len(values) < len(triang.triangles):
+        values = np.concatenate([values, np.full(len(triang.triangles) - len(values), np.nan)])
+    tpc = axis.tripcolor(triang, facecolors=values, edgecolors='k', cmap=cmap)
+    plt.colorbar(tpc, ax=axis, label=name)
+    return tpc
 
 def get_cell_boundaries(cell_id, cells, boundaries):
     """
